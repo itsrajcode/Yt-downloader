@@ -1,0 +1,52 @@
+---
+import { useState } from 'react';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouTube Video Downloader</title>
+  </head>
+  <body>
+    <div style="text-align:center; padding: 50px;">
+      <h1>YouTube Video Downloader</h1>
+      <form id="download-form">
+        <input 
+          type="text" 
+          id="url" 
+          placeholder="Enter YouTube Video URL" 
+          required
+          style="width: 60%; padding: 10px; margin-bottom: 20px;"
+        />
+        <br/>
+        <button 
+          type="submit" 
+          style="padding: 10px 20px; font-size: 16px;"
+        >Download</button>
+      </form>
+    </div>
+    <script>
+      async function downloadVideo(url) {
+    try {
+        const response = await fetch(`http://localhost:3001/download?url=${encodeURIComponent(url)}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = downloadUrl;
+        a.download = 'video.mp4';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+        console.error('Error downloading video:', error);
+    }
+}
+
+    </script>
+  </body>
+</html>
